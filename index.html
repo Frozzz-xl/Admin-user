@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración de Usuarios Pro</title>
+    
+    <!-- LIBRERÍAS EXTERNAS (Tailwind & Lucide) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Estilos movidos a style.css -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body class="text-gray-800 antialiased h-screen flex overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col z-10 transition-all duration-300" id="sidebar">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200">
+            <div class="flex items-center gap-2">
+                <div class="bg-indigo-600 p-1.5 rounded-lg">
+                    <i data-lucide="shield" class="text-white w-5 h-5"></i>
+                </div>
+                <span class="text-lg font-bold text-gray-800 tracking-tight">Admin<span class="text-indigo-600">Pro</span></span>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1 px-3">
+                <li>
+                    <a href="#" class="nav-link flex items-center px-3 py-2.5 text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors group">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-500 transition-colors"></i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link active flex items-center px-3 py-2.5 text-indigo-600 bg-indigo-50 rounded-lg transition-colors group">
+                        <i data-lucide="users" class="w-5 h-5 mr-3 text-indigo-600"></i>
+                        <span class="font-medium">Usuarios</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        
+        <!-- TOPBAR -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 z-20">
+            <div class="flex items-center">
+                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-md hover:bg-gray-100 text-gray-600 mr-2">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <h2 class="text-xl font-bold text-gray-800 md:hidden">AdminPro</h2>
+            </div>
+            
+            <!-- IDENTIDAD CORPORATIVA (Reemplaza área de búsqueda) -->
+            <div class="flex flex-col items-end justify-center">
+                <h1 class="text-sm md:text-lg font-bold text-gray-800 leading-none">Administrador usuarios SYSGAL</h1>
+                <span class="text-xs text-gray-500 font-medium mt-0.5">Estudio Galicia Corp.</span>
+            </div>
+        </header>
+
+        <!-- AREA DE TRABAJO (MAIN) -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 sm:p-6 custom-scrollbar">
+            
+            <!-- Encabezado de la página -->
+            <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Gestión de Usuarios</h1>
+                    <nav class="flex text-sm text-gray-500 mt-1">
+                        <ol class="flex items-center space-x-2">
+                            <li><a href="#" class="hover:text-indigo-600">Home</a></li>
+                            <li><span class="text-gray-400">/</span></li>
+                            <li><span class="text-gray-900 font-medium">Usuarios</span></li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="flex gap-2">
+                    <!-- Botón de Reset eliminado -->
+                    <button onclick="openModal()" class="inline-flex items-center justify-center px-4 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all shadow-lg shadow-indigo-200">
+                        <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
+                        Nuevo Usuario
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de Control (Filtros) -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+                <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                    
+                    <div class="w-full md:w-1/3 relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar por nombre, usuario o email..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                    </div>
+
+                    <div class="flex w-full md:w-auto gap-3">
+                        <div class="w-full md:w-40">
+                            <select id="roleFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+                                <option value="all">Todos los Roles</option>
+                                <option value="Administrador">Administrador</option>
+                                <option value="Gerencia">Gerencia</option>
+                                <option value="Analitica">Analítica</option>
+                                <option value="Supervisor">Supervisor</option>
+                                <option value="Call Center">Call Center</option>
+                            </select>
+                        </div>
+                        <div class="w-full md:w-40">
+                            <select id="statusFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-sm">
+                                <option value="all">Todos los Estados</option>
+                                <option value="Active">Activo</option>
+                                <option value="Inactive">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Datos -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50/50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold tracking-wider">
+                                <th class="px-6 py-4">Nombre</th>
+                                <th class="px-6 py-4">Usuario</th>
+                                <th class="px-6 py-4">Rol</th>
+                                <th class="px-6 py-4">Sede</th>
+                                <th class="px-6 py-4">Estado</th>
+                                <th class="px-6 py-4">Fecha Registro</th>
+                                <th class="px-6 py-4 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody" class="divide-y divide-gray-100">
+                            <!-- JS inyectará las filas aquí -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Estado vacío (Empty State) -->
+                <div id="emptyState" class="hidden py-12 flex flex-col items-center justify-center text-center">
+                    <div class="bg-gray-50 p-4 rounded-full mb-3">
+                        <i data-lucide="search-x" class="w-8 h-8 text-gray-400"></i>
+                    </div>
+                    <h3 class="text-gray-900 font-medium">No se encontraron usuarios</h3>
+                    <p class="text-gray-500 text-sm mt-1">Intenta ajustar los filtros de búsqueda.</p>
+                </div>
+
+                <!-- Footer de la tabla (Paginación) -->
+                <div class="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-50/50 mt-auto">
+                    
+                    <!-- Lado Izquierdo: Total -->
+                    <div class="text-sm text-gray-700 font-medium">
+                        Total de usuarios: <span id="totalRecords" class="text-indigo-600 font-bold">0</span>
+                    </div>
+
+                    <!-- Lado Derecho: Paginación -->
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm text-gray-600">
+                            Página <span id="pageIndicator" class="font-bold text-gray-900">1</span> de <span id="totalPages" class="font-bold text-gray-900">1</span>
+                        </span>
+                        
+                        <div class="flex gap-2">
+                            <button id="btnPrev" onclick="changePage(-1)" class="p-1.5 border border-gray-300 rounded-md bg-white text-gray-600 hover:bg-gray-50 hover:text-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:text-gray-600 transition-colors shadow-sm" disabled>
+                                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                            </button>
+                            <button id="btnNext" onclick="changePage(1)" class="p-1.5 border border-gray-300 rounded-md bg-white text-gray-600 hover:bg-gray-50 hover:text-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:text-gray-600 transition-colors shadow-sm" disabled>
+                                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL (Crear/Editar) -->
+    <div id="userModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4">
+        <div class="modal-content bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 id="modalTitle" class="text-lg font-bold text-gray-800">Nuevo Usuario</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="userForm" class="space-y-4">
+                    <input type="hidden" id="userId">
+                    
+                    <!-- Grid para Nombre y Usuario -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                            <input type="text" id="userName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Ej: Juan Pérez">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
+                            <input type="text" id="userUsername" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Ej: jperez">
+                        </div>
+                    </div>
+
+                    <!-- Grid para Rol y Sede -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+                            <select id="userRole" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                                <option value="Administrador">Administrador</option>
+                                <option value="Gerencia">Gerencia</option>
+                                <option value="Analitica">Analítica</option>
+                                <option value="Supervisor">Supervisor</option>
+                                <option value="Call Center">Call Center</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sede</label>
+                            <select id="userSede" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                                <option value="San Isidro">San Isidro</option>
+                                <option value="Lima Sur">Lima Sur</option>
+                                <option value="Colombia">Colombia</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Campo de Contraseña -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                        <div class="relative">
+                            <input type="password" id="userPassword" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="••••••••">
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <i id="passwordIcon" data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="userEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="ejemplo@empresa.com">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                        <div class="flex gap-4 mt-1">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="userStatus" value="Active" checked class="text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                <span class="ml-2 text-sm text-gray-600">Activo</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="userStatus" value="Inactive" class="text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                <span class="ml-2 text-sm text-gray-600">Inactivo</span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                    Cancelar
+                </button>
+                <button onclick="saveUser()" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-sm transition-colors">
+                    Guardar Usuario
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL (Confirmar Eliminación) -->
+    <div id="deleteModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 backdrop-blur-sm p-4">
+        <div class="modal-content bg-white w-full max-w-sm rounded-xl shadow-2xl overflow-hidden">
+            <div class="p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-red-100 p-2 mx-auto mb-4 flex items-center justify-center">
+                    <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">¿Eliminar Usuario?</h3>
+                <p class="text-sm text-gray-500 mb-6">Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este registro?</p>
+                
+                <div class="flex gap-3 justify-center">
+                    <button onclick="closeDeleteModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancelar
+                    </button>
+                    <button onclick="confirmDelete()" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-sm transition-colors">
+                        Sí, Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Notificaciones (Toasts) -->
+    <div id="toast-container"></div>
+    <script src="script.js"></script>
