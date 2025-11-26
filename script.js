@@ -1,4 +1,5 @@
-const defaultUsers = [
+// --- DATA POR DEFECTO ---
+        const defaultUsers = [
             { id: 1, name: "Carlos Ruiz", username: "cruiz", password: "password123", email: "carlos@tech.com", role: "Administrador", sede: "San Isidro", status: "Active", date: "2023-10-15" },
             { id: 2, name: "Ana Gómez", username: "agomez", password: "password123", email: "ana@design.com", role: "Analitica", sede: "Lima Sur", status: "Active", date: "2023-11-02" },
             { id: 3, name: "Luis Torres", username: "ltorres", password: "password123", email: "luis@viewer.com", role: "Call Center", sede: "Colombia", status: "Inactive", date: "2023-09-20" },
@@ -11,6 +12,15 @@ const defaultUsers = [
 
         function saveToLocalStorage() {
             localStorage.setItem('adminPro_users', JSON.stringify(users));
+        }
+
+        function resetData() {
+            if(window.confirm('¿Restaurar datos de ejemplo? Esto borrará tus cambios actuales.')){
+                users = [...defaultUsers];
+                saveToLocalStorage();
+                renderTable();
+                showToast('Datos restaurados de fábrica', 'neutral');
+            }
         }
 
         // --- REFERENCIAS DOM ---
@@ -63,9 +73,9 @@ const defaultUsers = [
 
             const filteredUsers = users.filter(user => {
                 const matchesSearch = user.name.toLowerCase().includes(searchTerm) || 
-                                      user.email.toLowerCase().includes(searchTerm) ||
-                                      user.username.toLowerCase().includes(searchTerm);
-                                      
+                                    user.email.toLowerCase().includes(searchTerm) ||
+                                    user.username.toLowerCase().includes(searchTerm);
+                                    
                 const matchesRole = roleValue === 'all' || user.role === roleValue;
                 const matchesStatus = statusValue === 'all' || user.status === statusValue;
                 return matchesSearch && matchesRole && matchesStatus;
@@ -99,62 +109,67 @@ const defaultUsers = [
                 
                 paginatedUsers.forEach(user => {
                     const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-50 transition-colors group';
+                    // Hover más claro y borde inferior oscuro
+                    row.className = 'hover:bg-slate-700/30 transition-colors group border-b border-slate-700/50 last:border-b-0';
                     
+                    // Badges de estado adaptados
                     const statusClass = user.status === 'Active' 
-                        ? 'bg-emerald-100 text-emerald-700 ring-emerald-600/20' 
-                        : 'bg-gray-100 text-gray-600 ring-gray-500/10';
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                        : 'bg-slate-700/50 text-slate-400 border border-slate-600';
                     
-                    // Colores por Rol
-                    let roleColor = 'text-gray-700 bg-gray-50 ring-gray-700/10';
-                    if (user.role === 'Administrador') roleColor = 'text-red-700 bg-red-50 ring-red-700/10';
-                    else if (user.role === 'Gerencia') roleColor = 'text-purple-700 bg-purple-50 ring-purple-700/10';
-                    else if (user.role === 'Analitica') roleColor = 'text-teal-700 bg-teal-50 ring-teal-700/10';
-                    else if (user.role === 'Supervisor') roleColor = 'text-blue-700 bg-blue-50 ring-blue-700/10';
-                    else if (user.role === 'Call Center') roleColor = 'text-amber-700 bg-amber-50 ring-amber-700/10';
+                    // Colores por Rol (Adaptados a fondo oscuro para que resalten)
+                    let roleColor = 'text-slate-300 bg-slate-700/50 border-slate-600';
+                    if (user.role === 'Administrador') roleColor = 'text-red-300 bg-red-900/30 border-red-900/50';
+                    else if (user.role === 'Gerencia') roleColor = 'text-purple-300 bg-purple-900/30 border-purple-900/50';
+                    else if (user.role === 'Analitica') roleColor = 'text-teal-300 bg-teal-900/30 border-teal-900/50';
+                    else if (user.role === 'Supervisor') roleColor = 'text-blue-300 bg-blue-900/30 border-blue-900/50';
+                    else if (user.role === 'Call Center') roleColor = 'text-amber-300 bg-amber-900/30 border-amber-900/50';
 
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white" 
-                                         src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random" 
-                                         alt="${user.name}">
+                                    <img class="h-10 w-10 rounded-full object-cover ring-2 ring-slate-700 shadow-sm" 
+                                        src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&bold=true" 
+                                        alt="${user.name}">
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">${user.name}</div>
-                                    <div class="text-sm text-gray-500">${user.email}</div>
+                                    <!-- Textos claros -->
+                                    <div class="text-sm font-semibold text-slate-200">${user.name}</div>
+                                    <div class="text-xs text-slate-500">${user.email}</div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">
+                        <!-- Username con fondo oscuro sutil -->
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-300 font-mono bg-slate-900/30 rounded-lg m-1">
                             ${user.username}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${roleColor}">
+                            <span class="inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-medium border ${roleColor}">
                                 ${user.role}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
                             <div class="flex items-center gap-1.5">
-                                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400"></i>
+                                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-500"></i>
                                 ${user.sede}
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${statusClass}">
-                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full ${user.status === 'Active' ? 'bg-emerald-600' : 'bg-gray-500'}"></span>
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusClass}">
+                                <span class="w-1.5 h-1.5 mr-1.5 rounded-full ${user.status === 'Active' ? 'bg-emerald-400' : 'bg-slate-500'}"></span>
                                 ${user.status === 'Active' ? 'Activo' : 'Inactivo'}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                             ${user.date}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onclick="editUser(${user.id})" class="text-indigo-600 hover:text-indigo-900 mr-3 p-1 rounded hover:bg-indigo-50 transition-colors" title="Editar">
+                            <!-- Botones de acción adaptados -->
+                            <button onclick="editUser(${user.id})" class="text-blue-400 hover:text-blue-300 mr-2 p-1.5 rounded-full hover:bg-blue-900/30 transition-colors" title="Editar">
                                 <i data-lucide="pencil" class="w-4 h-4"></i>
                             </button>
-                            <button onclick="deleteUser(${user.id})" class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors" title="Eliminar">
+                            <button onclick="deleteUser(${user.id})" class="text-red-400 hover:text-red-300 p-1.5 rounded-full hover:bg-red-900/30 transition-colors" title="Eliminar">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </td>
@@ -294,12 +309,14 @@ const defaultUsers = [
             }
         }
 
+        // Toasts adaptados a oscuro
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
-            let colors = type === 'error' ? 'bg-red-500' : type === 'neutral' ? 'bg-gray-800' : 'bg-emerald-500';
+            // Sombras más sutiles y colores base oscuros
+            let colors = type === 'error' ? 'bg-red-900/90 text-red-100 border border-red-800' : type === 'neutral' ? 'bg-slate-800 text-slate-200 border border-slate-700' : 'bg-emerald-900/90 text-emerald-100 border border-emerald-800';
             let icon = type === 'error' ? 'alert-circle' : type === 'neutral' ? 'trash' : 'check-circle';
 
-            toast.className = `toast flex items-center w-full max-w-xs p-4 space-x-3 text-white ${colors} rounded-lg shadow-lg`;
+            toast.className = `toast flex items-center w-full max-w-xs p-4 space-x-3 shadow-lg shadow-slate-950/50 rounded-lg ${colors} backdrop-blur-md`;
             toast.innerHTML = `
                 <i data-lucide="${icon}" class="w-5 h-5"></i>
                 <div class="text-sm font-medium">${message}</div>
@@ -329,3 +346,5 @@ const defaultUsers = [
         deleteModal.addEventListener('click', (e) => {
             if (e.target === deleteModal) closeDeleteModal();
         });
+
+        
