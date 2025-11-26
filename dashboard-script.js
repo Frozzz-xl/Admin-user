@@ -79,6 +79,43 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
                     document.getElementById(`role-bar-${index}`).style.width = `${percent}%`;
                 }, 100 + (index * 100));
             });
+
+            // 4. Generar Lista de Sedes (Reemplazo de Actividad)
+            const sedesCount = {};
+            users.forEach(u => { sedesCount[u.sede] = (sedesCount[u.sede] || 0) + 1; });
+            const sortedSedes = Object.keys(sedesCount).sort((a, b) => sedesCount[b] - sedesCount[a]);
+            
+            const sedesContainer = document.getElementById('sedes-list');
+            sedesContainer.innerHTML = '';
+
+            if (sortedSedes.length === 0) {
+                sedesContainer.innerHTML = '<div class="text-center text-slate-500 text-sm">No hay datos de sedes</div>';
+            } else {
+                sortedSedes.forEach((sede) => {
+                    const count = sedesCount[sede];
+                    const percent = (count / total) * 100;
+                    
+                    const item = document.createElement('div');
+                    item.className = "flex items-center justify-between p-3 rounded-lg bg-slate-700/30 border border-slate-700/50 hover:border-purple-500/30 transition-colors group";
+                    
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:text-purple-300 group-hover:bg-purple-500/20 transition-all">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-slate-200">${sede}</h4>
+                                <div class="text-xs text-slate-500 font-medium">${Math.round(percent)}% del total</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-lg font-bold text-white">${count}</span>
+                            <span class="text-xs text-slate-500 block">usuarios</span>
+                        </div>
+                    `;
+                    sedesContainer.appendChild(item);
+                });
+            }
         }
 
         // Función para animar números (contador)
