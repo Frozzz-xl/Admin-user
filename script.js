@@ -49,11 +49,6 @@
         // --- ESTADO PAGINACIÓN ---
         let currentPage = 1;
         const itemsPerPage = 7; // Cantidad de usuarios por página
-        
-        // --- ESTADO ORDENAMIENTO ---
-        // `key` puede ser: 'name','username','role','sede','status','date'
-        // `dir` 1 = ascendente, -1 = descendente
-        let sortConfig = { key: null, dir: 1 };
 
         // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -86,28 +81,6 @@
                 return matchesSearch && matchesRole && matchesStatus;
             });
 
-            // --- Ordenamiento ---
-            if (sortConfig.key) {
-                filteredUsers.sort((a, b) => {
-                    let va = a[sortConfig.key];
-                    let vb = b[sortConfig.key];
-
-                    // Manejar fechas de forma natural
-                    if (sortConfig.key === 'date') {
-                        const da = new Date(va || 0).getTime();
-                        const db = new Date(vb || 0).getTime();
-                        return sortConfig.dir * (da - db);
-                    }
-
-                    va = (va || '').toString().toLowerCase();
-                    vb = (vb || '').toString().toLowerCase();
-
-                    if (va < vb) return -1 * sortConfig.dir;
-                    if (va > vb) return 1 * sortConfig.dir;
-                    return 0;
-                });
-            }
-
             // 2. Cálculo de Paginación
             const totalRecords = filteredUsers.length;
             const totalPages = Math.ceil(totalRecords / itemsPerPage) || 1;
@@ -129,26 +102,6 @@
             btnNext.disabled = currentPage === totalPages;
 
             // 4. Renderizar Filas
-            // Actualizar íconos de ordenamiento en encabezados
-            try {
-                const headers = document.querySelectorAll('th.sortable');
-                headers.forEach(h => {
-                    const onclick = h.getAttribute('onclick') || '';
-                    const m = onclick.match(/sortTable\('\s*([^']+)\s*'\)/);
-                    const icon = h.querySelector('.sort-icon');
-                    if (icon) {
-                        if (m && m[1] && sortConfig.key === m[1]) {
-                            icon.setAttribute('data-lucide', sortConfig.dir === 1 ? 'chevron-up' : 'chevron-down');
-                        } else {
-                            icon.setAttribute('data-lucide', 'arrow-up-down');
-                        }
-                    }
-                });
-                lucide.createIcons();
-            } catch (e) {
-                // Si algo falla, no interrumpe el render
-            }
-
             if (totalRecords === 0) {
                 emptyState.classList.remove('hidden');
             } else {
@@ -395,16 +348,3 @@
         });
 
         
-        // --- FUNCION DE ORDENAMIENTO (accesible desde los encabezados) ---
-        function sortTable(column) {
-            if (!column) return;
-            if (sortConfig.key === column) {
-                sortConfig.dir = sortConfig.dir * -1; // alternar dirección
-            } else {
-                sortConfig.key = column;
-                sortConfig.dir = 1; // por defecto ascendente
-            }
-            currentPage = 1;
-            renderTable();
-        }
-

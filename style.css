@@ -80,25 +80,3 @@
             border-right: 3px solid #60a5fa;
         }
 
-        /* --- Estilos para cabeceras de tabla ordenables --- */
-        th.sortable {
-            cursor: pointer;
-            position: relative;
-            user-select: none;
-            transition: background-color 0.2s ease-in-out;
-        }
-
-        th.sortable:hover {
-            background-color: rgba(51, 65, 85, 0.5); /* Equivalente a bg-slate-700/50 */
-        }
-
-        th.sortable .sort-icon {
-            display: inline-block;
-            margin-left: 0.5rem;
-            opacity: 0.5;
-            transition: all 0.2s ease-in-out;
-        }
-
-        th.sortable:hover .sort-icon {
-            opacity: 1;
-        }
