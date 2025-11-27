@@ -110,6 +110,39 @@
             return password && password.length >= MIN_PASSWORD_LENGTH;
         }
 
+        // --- GENERADOR DE CONTRASEÑAS ---
+        function generateRandomPassword() {
+            const length = 12;
+            const lower = "abcdefghijklmnopqrstuvwxyz";
+            const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const numbers = "0123456789";
+            const special = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
+            
+            let password = "";
+            password += lower.charAt(Math.floor(Math.random() * lower.length));
+            password += upper.charAt(Math.floor(Math.random() * upper.length));
+            password += numbers.charAt(Math.floor(Math.random() * numbers.length));
+            password += special.charAt(Math.floor(Math.random() * special.length));
+            
+            const all = lower + upper + numbers + special;
+            for (let i = 4; i < length; i++) {
+                password += all.charAt(Math.floor(Math.random() * all.length));
+            }
+            
+            return password.split('').sort(() => 0.5 - Math.random()).join('');
+        }
+
+        // Make it available globally so the HTML button can call it
+        window.setGeneratedPassword = function() {
+            const password = generateRandomPassword();
+            appState.dom.userPasswordInput.value = password;
+            // Mostramos la contraseña para que el usuario pueda verla
+            appState.dom.userPasswordInput.type = 'text';
+            appState.dom.passwordIcon.setAttribute('data-lucide', 'eye-off');
+            lucide.createIcons();
+            showToast('Contraseña generada', 'neutral');
+        }
+
         function isValidUsername(username) {
             return username && username.trim().length >= 3;
         }
@@ -324,6 +357,10 @@
                 document.getElementById('userId').value = '';
                 document.getElementById('userRole').value = 'Gerencia'; 
                 document.getElementById('userSede').value = 'San Isidro';
+                // Reset password input type to password
+                appState.dom.userPasswordInput.type = 'password';
+                appState.dom.passwordIcon.setAttribute('data-lucide', 'eye');
+                lucide.createIcons();
             }
         }
 
