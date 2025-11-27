@@ -6,6 +6,13 @@
             background-color: #0f172a; /* slate-900 */
         }
 
+        /* --- MAPA DE COLORES POR ROL (Referencia - Colores aplicados desde JS/ROLE_COLORS) --- */
+        /* Administrador: text-red-300 bg-red-900/30 border-red-900/50 */
+        /* Gerencia: text-purple-300 bg-purple-900/30 border-purple-900/50 */
+        /* Analítica: text-teal-300 bg-teal-900/30 border-teal-900/50 */
+        /* Supervisor: text-blue-300 bg-blue-900/30 border-blue-900/50 */
+        /* Call Center: text-amber-300 bg-amber-900/30 border-amber-900/50 */
+
         /* --- CLASES DEGRADADO PERSONALIZADAS (Se mantienen igual, resaltan bien en oscuro) --- */
         .bg-gradient-primary {
             background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);

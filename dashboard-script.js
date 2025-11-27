@@ -1,5 +1,5 @@
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('es-ES', options);
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('es-ES', options);
 
         // --- LÓGICA DE DATOS ---
         // Importante: Usamos la misma clave 'adminPro_users' que el otro archivo para compartir datos
@@ -12,7 +12,14 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
         ];
 
         // Cargar datos del LocalStorage (compartido)
-        let users = JSON.parse(localStorage.getItem('adminPro_users')) || defaultUsers;
+        let users;
+        try {
+            const stored = localStorage.getItem('adminPro_users');
+            users = stored ? JSON.parse(stored) : defaultUsers;
+        } catch (e) {
+            console.error('Error cargando datos del dashboard:', e);
+            users = defaultUsers;
+        }
 
         // --- CÁLCULO DE ESTADÍSTICAS ---
         function loadDashboard() {
@@ -37,7 +44,7 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
                 const modeSede = sedes.sort((a,b) =>
                     sedes.filter(v => v===a).length - sedes.filter(v => v===b).length
                 ).pop();
-                document.getElementById('stat-top-sede').innerText = modeSede;
+                document.getElementById('stat-top-sede').textContent = modeSede;
             } else {
                 document.getElementById('stat-top-sede').innerText = "Sin datos";
             }
@@ -64,14 +71,18 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
                 item.innerHTML = `
                     <div>
                         <div class="flex justify-between text-sm mb-2">
-                            <span class="text-slate-300 font-medium">${role}</span>
-                            <span class="text-slate-400">${count} usuarios (${Math.round(percent)}%)</span>
+                            <span class="text-slate-300 font-medium text-content"></span>
+                            <span class="text-slate-400"><span class="count-content"></span> usuarios (<span class="percent-content"></span>%)</span>
                         </div>
                         <div class="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
                             <div class="${barColor} h-2.5 rounded-full transition-all duration-1000 ease-out" style="width: 0%" id="role-bar-${index}"></div>
                         </div>
                     </div>
                 `;
+                // Usar textContent para texto puro y evitar XSS
+                item.querySelector('.text-content').textContent = role;
+                item.querySelector('.count-content').textContent = count;
+                item.querySelector('.percent-content').textContent = Math.round(percent);
                 rolesContainer.appendChild(item);
 
                 // Animación de la barra
@@ -104,15 +115,19 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
                                 <i data-lucide="map-pin" class="w-4 h-4"></i>
                             </div>
                             <div>
-                                <h4 class="text-sm font-medium text-slate-200">${sede}</h4>
-                                <div class="text-xs text-slate-500 font-medium">${Math.round(percent)}% del total</div>
+                                <h4 class="text-sm font-medium text-slate-200 sede-name"></h4>
+                                <div class="text-xs text-slate-500 font-medium"><span class="percent-val"></span>% del total</div>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-lg font-bold text-white">${count}</span>
+                            <span class="text-lg font-bold text-white count-val"></span>
                             <span class="text-xs text-slate-500 block">usuarios</span>
                         </div>
                     `;
+                    // Usar textContent para valores dinámicos
+                    item.querySelector('.sede-name').textContent = sede;
+                    item.querySelector('.percent-val').textContent = Math.round(percent);
+                    item.querySelector('.count-val').textContent = count;
                     sedesContainer.appendChild(item);
                 });
             }
@@ -128,11 +143,11 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
             const obj = document.getElementById(id);
             const timer = setInterval(function() {
                 current += increment;
-                obj.innerHTML = current;
-                if (current == end) {
+                obj.textContent = current;
+                if (current === end) {
                     clearInterval(timer);
                 }
-            }, Math.max(stepTime, 50)); // Mínimo 50ms para que se vea la animación
+            }, Math.max(stepTime, 50));
         }
 
         // Inicializar iconos y dashboard
