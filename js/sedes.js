@@ -134,7 +134,7 @@
         }
 
         function updateSortIcons() {
-            const headers = document.querySelectorAll('th.sortable');
+             const headers = document.querySelectorAll('th.sortable');
             headers.forEach(h => {
                 const onclick = h.getAttribute('onclick') || '';
                 const m = onclick.match(/sortTable\('\s*([^']+)\s*'\)/);

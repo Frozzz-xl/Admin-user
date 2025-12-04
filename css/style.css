@@ -159,6 +159,35 @@ thead.bg-slate-900\/50 {
     border-right: 3px solid #3b82f6;
 }
 
+/* Static Shells for Skeleton Loading */
+.app-sidebar-container {
+    width: 16rem; /* w-64 */
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+    transition: all 0.3s;
+    /* Height is controlled by flex container generally */
+}
+@media (min-width: 768px) {
+    .app-sidebar-container {
+        display: flex;
+    }
+}
+
+.app-header-container {
+    height: 4rem; /* h-16 */
+    background-color: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    opacity: 0.9;
+    backdrop-filter: blur(12px);
+}
+
 /* Toast */
 #toast-container {
     position: fixed;

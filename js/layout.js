@@ -3,10 +3,22 @@
 const CURRENT_PAGE = window.location.pathname.split("/").pop() || "index.html";
 
 function renderSidebar() {
-    const sidebar = document.createElement('aside');
-    sidebar.className = "w-64 bg-slate-800 border-r border-slate-700/50 hidden md:flex flex-col z-10 transition-all duration-300 shadow-xl shadow-slate-900/20";
-    sidebar.id = "sidebar";
+    const sidebar = document.getElementById('sidebar-container');
+    if (!sidebar) return;
 
+    // Remove the skeleton/shell class if we want to apply the full Tailwind utility set
+    // BUT we must keep the layout-critical properties to prevent shift.
+    // The shell classes in CSS handle the basic layout.
+    // We add the rest of the utility classes for styling.
+    
+    // Note: We don't remove app-sidebar-container because it provides the display/width logic.
+    // We just inject the content.
+    
+    // Add additional styling classes that might not be in the CSS shell
+    sidebar.className += " w-64 bg-slate-800 border-r border-slate-700/50 hidden md:flex flex-col z-10 transition-all duration-300 shadow-xl shadow-slate-900/20";
+    
+    // Clean up duplicate classes if any (optional, purely for cleanliness)
+    
     sidebar.innerHTML = `
         <div class="h-16 flex items-center px-6 border-b border-slate-700/50">
             <div class="flex items-center gap-2">
@@ -53,13 +65,19 @@ function renderSidebar() {
             </div>
         </nav>
     `;
-
-    document.body.prepend(sidebar);
+    
+    // Assign ID used for mobile toggle logic
+    sidebar.id = "sidebar"; 
 }
 
 function renderHeader(title = "AdminPro", subtitle = "Estudio Galicia Corp.") {
-    const headerHTML = `
-        <header class="h-16 bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-4 sm:px-6 z-20 sticky top-0">
+    const header = document.getElementById('header-container');
+    if (!header) return;
+
+    // Apply header classes
+    header.className += " h-16 bg-slate-800/90 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-4 sm:px-6 z-20 sticky top-0";
+
+    header.innerHTML = `
             <div class="flex items-center">
                 <button id="mobileMenuBtn" class="md:hidden p-2 rounded-md hover:bg-slate-700 text-slate-300 mr-2">
                     <i data-lucide="menu" class="w-6 h-6"></i>
@@ -81,28 +99,15 @@ function renderHeader(title = "AdminPro", subtitle = "Estudio Galicia Corp.") {
                     <span class="text-xs text-slate-400 font-medium mt-0.5 tracking-wide">${subtitle}</span>
                 </div>
             </div>
-        </header>
     `;
-
-    // Inject into the main content area (first child of the .flex-1 div)
-    const mainContainer = document.querySelector('.flex-1');
-    if(mainContainer) {
-        mainContainer.insertAdjacentHTML('afterbegin', headerHTML);
-    }
 }
 
 // Initialize layout on load
 document.addEventListener('DOMContentLoaded', () => {
     renderSidebar();
     
-    // Setup Mobile Menu Logic (Global)
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const sidebar = document.getElementById('sidebar');
-    
-    // We need to delegate or wait for elements to exist, but renderSidebar runs immediately.
-    // However, the event listener needs to be attached after the element is in DOM.
-    // Since we prepend, it should be there.
-    
-    // Note: renderHeader also inserts #mobileMenuBtn.
-    // So we should attach listener after both are rendered.
+    // renderHeader is called with custom titles in the HTML files themselves, usually.
+    // But since we are moving to immediate execution/DOMContentLoaded, we might need to handle it.
+    // The HTML files currently call `renderHeader('Title', 'Subtitle')`.
+    // We should allow that to continue working.
 });
