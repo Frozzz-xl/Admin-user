@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* DARK MODE DEFAULT */
+    --bg-body: #0f172a;
+    --bg-sidebar: #1e293b;
+    --bg-card: #1e293b;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --border-color: rgba(51, 65, 85, 0.5);
+    
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    
+    /* INPUTS */
+    --bg-input: #0f172a;
+    --border-input: #475569;
+}
+
+[data-theme="light"] {
+    --bg-body: #f1f5f9;
+    --bg-sidebar: #ffffff;
+    --bg-card: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --border-color: #cbd5e1;
+    
+    --bg-input: #ffffff;
+    --border-input: #94a3b8;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Override utility classes with variables where necessary */
+.bg-slate-900 { background-color: var(--bg-body) !important; }
+.bg-slate-800 { background-color: var(--bg-card) !important; }
+.bg-slate-700 { background-color: var(--bg-input) !important; } /* Used in inputs/bars */
+.bg-slate-700\/50 { background-color: var(--border-color) !important; } /* Used in table rows */
+
+.text-slate-200, .text-white { color: var(--text-primary) !important; }
+.text-slate-300, .text-slate-400, .text-slate-500 { color: var(--text-secondary) !important; }
+
+.border-slate-700, .border-slate-700\/50, .border-slate-600 { border-color: var(--border-color) !important; }
+
+.bg-slate-900\/50 { background-color: var(--bg-body) !important; }
+
+/* Fix Input Fields in Light Mode */
+input, select {
+    background-color: var(--bg-input) !important;
+    border-color: var(--border-input) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Fix Table Headers */
+thead.bg-slate-900\/50 {
+    background-color: var(--bg-body) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+
+/* --- LIGHT MODE SPECIFIC OVERRIDES --- */
+[data-theme="light"] .bg-slate-700\/30 {
+    background-color: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="light"] .bg-slate-900\/30 {
+    background-color: #f1f5f9 !important; /* slate-100 */
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Light Mode: Header Specific Override */
+[data-theme="light"] .bg-slate-800\/90 {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Role Colors Overrides for Light Mode (Remove Transparency) */
+/* Administrador (Red) */
+[data-theme="light"] .bg-red-900\/30 { background-color: #fee2e2 !important; border-color: #fecaca !important; }
+[data-theme="light"] .text-red-300 { color: #b91c1c !important; }
+[data-theme="light"] .border-red-900\/50 { border-color: #fecaca !important; }
+
+/* Gerencia (Purple) */
+[data-theme="light"] .bg-purple-900\/30 { background-color: #f3e8ff !important; border-color: #e9d5ff !important; }
+[data-theme="light"] .text-purple-300 { color: #7e22ce !important; }
+[data-theme="light"] .border-purple-900\/50 { border-color: #e9d5ff !important; }
+
+/* Analitica (Teal) */
+[data-theme="light"] .bg-teal-900\/30 { background-color: #ccfbf1 !important; border-color: #99f6e4 !important; }
+[data-theme="light"] .text-teal-300 { color: #0f766e !important; }
+[data-theme="light"] .border-teal-900\/50 { border-color: #99f6e4 !important; }
+
+/* Supervisor (Blue) */
+[data-theme="light"] .bg-blue-900\/30 { background-color: #dbeafe !important; border-color: #bfdbfe !important; }
+[data-theme="light"] .text-blue-300 { color: #1d4ed8 !important; }
+[data-theme="light"] .border-blue-900\/50 { border-color: #bfdbfe !important; }
+
+/* Call Center (Amber) */
+[data-theme="light"] .bg-amber-900\/30 { background-color: #fef3c7 !important; border-color: #fde68a !important; }
+[data-theme="light"] .text-amber-300 { color: #b45309 !important; }
+[data-theme="light"] .border-amber-900\/50 { border-color: #fde68a !important; }
+
+
+/* Keep specific text colors */
+.text-blue-400, .text-blue-500 { color: #3b82f6 !important; }
+.text-emerald-400, .text-emerald-500 { color: #10b981 !important; }
+.text-red-400, .text-red-500 { color: #ef4444 !important; }
+.text-purple-500 { color: #a855f7 !important; }
+
+/* Gradient */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+}
+
+/* Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--border-input);
+    border-radius: 20px;
+}
+
+/* Modal */
+.modal {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-content {
+    background-color: var(--bg-card);
+    transform: scale(0.95);
+    transition: transform 0.3s ease-in-out;
+}
+.modal.active .modal-content {
+    transform: scale(1);
+}
+
+/* Sidebar Active Link */
+.nav-link.active {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: #3b82f6 !important;
+    border-right: 3px solid #3b82f6;
+}
+
+/* Toast */
+#toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 100;
+}

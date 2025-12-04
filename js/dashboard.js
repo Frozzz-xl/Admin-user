@@ -150,6 +150,152 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
             }, Math.max(stepTime, 50));
         }
 
+        // --- GESTIÓN DE PESTAÑAS ---
+        function switchTab(tab) {
+            const summaryView = document.getElementById('view-summary');
+            const chartsView = document.getElementById('view-charts');
+            const summaryBtn = document.getElementById('tab-summary-btn');
+            const chartsBtn = document.getElementById('tab-charts-btn');
+
+            if (tab === 'summary') {
+                summaryView.classList.remove('hidden');
+                chartsView.classList.add('hidden');
+                summaryBtn.classList.replace('bg-slate-800', 'bg-blue-600');
+                summaryBtn.classList.replace('text-slate-400', 'text-white');
+                chartsBtn.classList.replace('bg-blue-600', 'bg-slate-800');
+                chartsBtn.classList.replace('text-white', 'text-slate-400');
+            } else {
+                summaryView.classList.add('hidden');
+                chartsView.classList.remove('hidden');
+                chartsBtn.classList.replace('bg-slate-800', 'bg-blue-600');
+                chartsBtn.classList.replace('text-slate-400', 'text-white');
+                summaryBtn.classList.replace('bg-blue-600', 'bg-slate-800');
+                summaryBtn.classList.replace('text-white', 'text-slate-400');
+                
+                // Inicializar gráficos si no existen
+                initCharts();
+            }
+        }
+
+        // --- CHART.JS CONFIG ---
+        let rolesChartInstance = null;
+        let sedesChartInstance = null;
+
+        function initCharts() {
+            // Determine theme colors
+            const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+            const textColor = isDark ? '#cbd5e1' : '#1e293b'; // slate-300 vs slate-800
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+            // Preparar datos
+            const rolesCount = {};
+            const sedesCount = {};
+            
+            users.forEach(u => {
+                rolesCount[u.role] = (rolesCount[u.role] || 0) + 1;
+                sedesCount[u.sede] = (sedesCount[u.sede] || 0) + 1;
+            });
+
+            const roleLabels = Object.keys(rolesCount);
+            const roleData = Object.values(rolesCount);
+            
+            const sedeLabels = Object.keys(sedesCount);
+            const sedeData = Object.values(sedesCount);
+
+            // Colores
+            const chartColors = [
+                'rgba(59, 130, 246, 0.7)', // Blue
+                'rgba(168, 85, 247, 0.7)', // Purple
+                'rgba(16, 185, 129, 0.7)', // Emerald
+                'rgba(245, 158, 11, 0.7)', // Amber
+                'rgba(236, 72, 153, 0.7)'  // Pink
+            ];
+
+            // Chart 1: Roles (Pie/Doughnut)
+            if (rolesChartInstance) rolesChartInstance.destroy();
+            const ctxRoles = document.getElementById('chartRoles').getContext('2d');
+            rolesChartInstance = new Chart(ctxRoles, {
+                type: 'doughnut',
+                data: {
+                    labels: roleLabels,
+                    datasets: [{
+                        data: roleData,
+                        backgroundColor: chartColors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'right', 
+                            labels: { color: textColor, font: { family: "'Inter', sans-serif" } } 
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Sedes (Bar)
+            if (sedesChartInstance) sedesChartInstance.destroy();
+            const ctxSedes = document.getElementById('chartSedes').getContext('2d');
+            sedesChartInstance = new Chart(ctxSedes, {
+                type: 'bar',
+                data: {
+                    labels: sedeLabels,
+                    datasets: [{
+                        label: 'Usuarios',
+                        data: sedeData,
+                        backgroundColor: chartColors[0],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            ticks: { color: textColor, stepSize: 1 },
+                            grid: { color: gridColor }
+                        },
+                        x: {
+                            ticks: { color: textColor },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.9)',
+                            titleColor: isDark ? '#fff' : '#1e293b',
+                            bodyColor: isDark ? '#fff' : '#1e293b',
+                            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
+        }
+
+        // Observe theme changes to update charts
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                    // Only update if charts view is visible
+                    if (!document.getElementById('view-charts').classList.contains('hidden')) {
+                        initCharts();
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+
         // Inicializar iconos y dashboard
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();

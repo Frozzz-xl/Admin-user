@@ -93,10 +93,42 @@
             });
         }
 
+        // --- CARGAR SEDES DINÁMICAS EN EL SELECT ---
+        function initializeSedeSelect() {
+            const sedeSelect = document.getElementById('userSede');
+            if (!sedeSelect) return;
+            
+            let sedes = [];
+            try {
+                const stored = localStorage.getItem('adminPro_sedes');
+                if (stored) {
+                    sedes = JSON.parse(stored);
+                } else {
+                    // Fallback to defaults if not yet initialized in localStorage
+                    sedes = [
+                        { name: "San Isidro" },
+                        { name: "Lima Sur" },
+                        { name: "Colombia" }
+                    ];
+                }
+            } catch(e) {
+                console.error("Error loading sedes", e);
+            }
+
+            sedeSelect.innerHTML = '';
+            sedes.forEach(sede => {
+                const option = document.createElement('option');
+                option.value = sede.name;
+                option.textContent = sede.name;
+                sedeSelect.appendChild(option);
+            });
+        }
+
         // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
             loadUsers();
             initializeRoleSelect();
+            initializeSedeSelect();
             renderTable();
             lucide.createIcons();
         });

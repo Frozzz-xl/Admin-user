@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Inicio - SYSGAL</title>
+    
+    <script>
+        if (!sessionStorage.getItem('isLoggedIn')) {
+            window.location.href = 'index.html';
+        }
+        // Theme Check (Anti-FOUC)
+        if (localStorage.getItem('adminPro_theme') === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+
+    <!-- LIBRERÍAS EXTERNAS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="text-slate-200 antialiased h-screen flex overflow-hidden bg-slate-900">
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden relative bg-slate-900">
+        
+        <!-- HEADER injected by layout.js -->
+
+        <!-- AREA DE TRABAJO (MAIN) -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-8 custom-scrollbar relative">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div class="absolute top-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-10 left-10 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
+            </div>
+
+            <div class="max-w-5xl mx-auto space-y-12 relative z-10">
+                
+                <!-- Hero Section -->
+                <div class="text-center py-10 home-hero-section">
+                    <div class="inline-flex items-center justify-center p-2 bg-slate-800/50 border border-slate-700/50 rounded-full mb-6 backdrop-blur-sm shadow-sm">
+                        <span class="px-3 py-1 bg-gradient-primary rounded-full text-xs font-bold text-white mr-2">V2.0</span>
+                        <span class="text-xs text-slate-300 pr-2">Sistema de Gestión Integral</span>
+                    </div>
+                    
+                    <h1 class="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">
+                        Administrador de <span class="text-gradient-primary">Usuario</span>
+                    </h1>
+                    
+                    <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
+                        Plataforma centralizada para la administración eficiente de identidades, control de accesos y supervisión operativa de Estudio Galicia Corp.
+                    </p>
+
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="users.html" class="px-8 py-3 bg-gradient-primary bg-gradient-primary-hover text-white font-semibold rounded-lg shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all transform hover:-translate-y-1 flex items-center">
+                            <i data-lucide="users" class="w-5 h-5 mr-2"></i>
+                            Gestionar Usuarios
+                        </a>
+                        <a href="dashboard.html" class="px-8 py-3 bg-slate-800 border border-slate-700 text-slate-300 font-semibold rounded-lg hover:bg-slate-700 hover:text-white transition-all flex items-center">
+                            <i data-lucide="bar-chart-2" class="w-5 h-5 mr-2"></i>
+                            Ver Métricas
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Feature 1 -->
+                    <div class="home-feature-card  backdrop-blur-sm border border-slate-700/50 p-6 rounded-2xl hover: transition-colors group">
+                        <div class="w-12 h-12 bg-blue-900/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Seguridad Avanzada</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Control total sobre roles y permisos. Generación automática de contraseñas seguras y auditoría de accesos.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="home-feature-card  backdrop-blur-sm border border-slate-700/50 p-6 rounded-2xl hover: transition-colors group">
+                        <div class="w-12 h-12 bg-purple-900/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i data-lucide="zap" class="w-6 h-6 text-purple-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Gestión Ágil</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Interfaz optimizada para operaciones rápidas. Búsqueda instantánea, filtros dinámicos y edición en tiempo real.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="home-feature-card backdrop-blur-sm border border-slate-700/50 p-6 rounded-2xl hover: transition-colors group">
+                        <div class="w-12 h-12 bg-emerald-200/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i data-lucide="globe" class="w-6 h-6 text-emerald-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Multi-Sede</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Administración unificada para todas las sedes operativas: San Isidro, Lima Sur y Colombia.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer Info -->
+                <div class="border-t border-slate-800 pt-8 text-center">
+                    <p class="text-xs text-slate-500">
+                        &copy; 2024 SYSGAL - Sistema de Gestión Administrativa. Todos los derechos reservados.
+                    </p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/layout.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        // Init header
+        renderHeader('Bienvenido a SYSGAL', 'Estudio Galicia Corp.');
+        
+        // Add listener for mobile menu after render
+        setTimeout(() => {
+             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+             const sidebar = document.getElementById('sidebar');
+             if (mobileMenuBtn && sidebar) {
+                 mobileMenuBtn.addEventListener('click', () => {
+                     sidebar.classList.toggle('hidden');
+                     sidebar.classList.toggle('absolute');
+                     sidebar.classList.toggle('h-full');
+                 });
+             }
+             lucide.createIcons();
+        }, 50);
+    </script>
+</body>
+</html>

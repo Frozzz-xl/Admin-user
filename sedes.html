@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Sedes - SYSGAL</title>
+    
+    <script>
+        if (!sessionStorage.getItem('isLoggedIn')) {
+            window.location.href = 'index.html';
+        }
+        // Theme Check (Anti-FOUC)
+        if (localStorage.getItem('adminPro_theme') === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="text-slate-200 antialiased h-screen flex overflow-hidden bg-slate-900">
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden relative bg-slate-900">
+        
+        <!-- HEADER injected by layout.js -->
+
+        <!-- WORKSPACE -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 custom-scrollbar">
+            
+            <!-- Page Header -->
+            <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-white tracking-tight">Sedes Operativas</h1>
+                    <nav class="flex text-sm text-slate-400 mt-1">
+                        <ol class="flex items-center space-x-2">
+                            <li><a href="home.html" class="hover:text-blue-400 transition-colors">Home</a></li>
+                            <li><span class="text-slate-600">/</span></li>
+                            <li><span class="text-white font-medium">Sedes</span></li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal()" class="inline-flex items-center justify-center px-5 py-2.5 bg-gradient-primary bg-gradient-primary-hover text-white text-sm font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg shadow-blue-900/40 transform hover:-translate-y-0.5">
+                        <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                        Nueva Sede
+                    </button>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700/50 p-5 mb-6">
+                <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                    <div class="w-full md:w-1/3 relative group">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500 group-focus-within:text-blue-400 transition-colors w-5 h-5"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar sede..." class="w-full pl-10 pr-4 py-2 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all bg-slate-900 text-slate-200 placeholder-slate-500 focus:bg-slate-900/80">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700/50 overflow-hidden flex flex-col">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900/40 border-b border-slate-700 text-xs uppercase text-slate-400 font-bold tracking-wider">
+                                <th class="px-6 py-4 sortable group cursor-pointer hover:text-slate-300 transition-colors" onclick="sortTable('name')">Nombre Sede <i data-lucide="arrow-up-down" class="sort-icon inline w-3 h-3 ml-1"></i></th>
+                                <th class="px-6 py-4 sortable group cursor-pointer hover:text-slate-300 transition-colors" onclick="sortTable('address')">Dirección <i data-lucide="arrow-up-down" class="sort-icon inline w-3 h-3 ml-1"></i></th>
+                                <th class="px-6 py-4 sortable group cursor-pointer hover:text-slate-300 transition-colors" onclick="sortTable('date')">Fecha Registro <i data-lucide="arrow-up-down" class="sort-icon inline w-3 h-3 ml-1"></i></th>
+                                <th class="px-6 py-4 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sedeTableBody" class="divide-y divide-slate-700/50">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="emptyState" class="hidden py-16 flex flex-col items-center justify-center text-center">
+                    <div class="bg-slate-700/50 p-4 rounded-full mb-3 shadow-inner">
+                        <i data-lucide="search-x" class="w-8 h-8 text-slate-400"></i>
+                    </div>
+                    <h3 class="text-white font-medium text-lg">No se encontraron sedes</h3>
+                </div>
+
+                <div class="px-6 py-4 border-t border-slate-700/50 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900/20 mt-auto">
+                    <div class="text-sm text-slate-400 font-medium">
+                        Total sedes: <span id="totalRecords" class="text-gradient-primary font-bold text-base">0</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm text-slate-400">
+                            Página <span id="pageIndicator" class="font-bold text-white">1</span> de <span id="totalPages" class="font-bold text-white">1</span>
+                        </span>
+                        <div class="flex gap-2">
+                            <button id="btnPrev" onclick="changePage(-1)" class="p-2 border border-slate-700 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white transition-all shadow-sm" disabled>
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            </button>
+                            <button id="btnNext" onclick="changePage(1)" class="p-2 border border-slate-700 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white transition-all shadow-sm" disabled>
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL SEDE -->
+    <div id="sedeModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 hidden">
+        <div class="modal-content bg-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+            <div class="px-6 py-5 bg-gradient-primary flex justify-between items-center shadow-md">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
+                        <i data-lucide="map-pin" class="text-white w-5 h-5"></i>
+                    </div>
+                    <h3 id="modalTitle" class="text-lg font-bold text-white tracking-wide text-shadow-sm">Nueva Sede</h3>
+                </div>
+                <button onclick="closeModal()" class="text-white/70 hover:text-white hover:bg-white/10 rounded-full p-1 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-8">
+                <form id="sedeForm" class="space-y-5">
+                    <input type="hidden" id="sedeId">
+                    
+                    <div class="space-y-1">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Nombre Sede</label>
+                        <input type="text" id="sedeName" required class="w-full px-3 py-2.5 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 bg-slate-900 text-slate-200" placeholder="Ej: Lima Norte">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Dirección</label>
+                        <input type="text" id="sedeAddress" class="w-full px-3 py-2.5 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 bg-slate-900 text-slate-200" placeholder="Ej: Av. Principal 123">
+                    </div>
+                </form>
+            </div>
+            <div class="px-8 py-5 bg-slate-900/30 border-t border-slate-700/50 flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-5 py-2.5 text-sm font-semibold text-slate-300 bg-slate-700 border border-slate-600 rounded-lg hover:bg-slate-600 hover:text-white transition-all">
+                    Cancelar
+                </button>
+                <button onclick="saveSede()" class="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-primary bg-gradient-primary-hover rounded-lg hover:shadow-lg transition-all">
+                    Guardar Sede
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DELETE -->
+    <div id="deleteModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 hidden">
+        <div class="modal-content bg-slate-800 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+            <div class="p-8 text-center">
+                <div class="w-16 h-16 rounded-full bg-red-900/30 p-3 mx-auto mb-5 flex items-center justify-center shadow-sm border border-red-900/50">
+                    <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">¿Eliminar Sede?</h3>
+                <p class="text-sm text-slate-400 mb-8">¿Estás seguro? Esta acción no se puede deshacer.</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="closeDeleteModal()" class="w-full px-4 py-2.5 text-sm font-semibold text-slate-300 bg-slate-700 border border-slate-600 rounded-lg hover:bg-slate-600 hover:text-white transition-colors">
+                        Cancelar
+                    </button>
+                    <button onclick="confirmDelete()" class="w-full px-4 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-md transition-all">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/layout.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/sedes.js"></script>
+    <script>
+        renderHeader('Gestión de Sedes', 'Administración de Ubicaciones');
+        // Add listener for mobile menu after render
+        setTimeout(() => {
+             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+             const sidebar = document.getElementById('sidebar');
+             if (mobileMenuBtn && sidebar) {
+                 mobileMenuBtn.addEventListener('click', () => {
+                     sidebar.classList.toggle('hidden');
+                     sidebar.classList.toggle('absolute');
+                     sidebar.classList.toggle('h-full');
+                 });
+             }
+             lucide.createIcons();
+        }, 50);
+    </script>
+</body>
+</html>
