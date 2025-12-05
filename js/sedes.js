@@ -232,11 +232,15 @@
         function deleteSede(id) {
             appState.itemToDeleteId = id;
             appState.dom.deleteModal.classList.remove('hidden');
+            setTimeout(() => appState.dom.deleteModal.classList.add('active'), 10);
         }
 
         function closeDeleteModal() {
-            appState.dom.deleteModal.classList.add('hidden');
-            appState.itemToDeleteId = null;
+            appState.dom.deleteModal.classList.remove('active');
+            setTimeout(() => {
+                appState.dom.deleteModal.classList.add('hidden');
+                appState.itemToDeleteId = null;
+            }, 300);
         }
 
         function confirmDelete() {
